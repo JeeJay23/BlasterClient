@@ -20,8 +20,8 @@ class MQTT():
 
 
     def start(self):
-        self.mqttc.on_connect = self.on_connect()
-        self.mqttc.on_message = self.on_message()
+        self.mqttc.on_connect = self.on_connect
+        self.mqttc.on_message = self.on_message
         self.mqttc.connect(self.BROKER_ADDR, 1883, 60)
         self.mqttc.loop_start()
 
