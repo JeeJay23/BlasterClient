@@ -2,10 +2,11 @@ import paho.mqtt.client as mqtt
 
 class MQTT():
 
-    def __init__(self, broker_ip, topic_list):
+    def __init__(self, broker_ip, topic_list, message_callback):
         self.BROKER_ADDR = broker_ip
         self.TOPICS = topic_list
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        self.message_callback = message_callback
     
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, reason_code, properties):
@@ -17,7 +18,7 @@ class MQTT():
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self, client, userdata, msg):
-        print(msg.topic+" "+str(msg.payload))
+        self.message_callback(msg.topic, msg.payload.decode())
 
 
     def start(self):
