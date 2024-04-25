@@ -1,15 +1,20 @@
 import paho.mqtt.client as mqtt
 import json
+from Configuration import Configuration
 
 class MQTT():
 
-    def __init__(self, id, broker_ip, topic_list, register_ack_callback, request_config_callback):
-        self.id = id
-        self.BROKER_ADDR = broker_ip
-        self.TOPICS = topic_list
+    def __init__(self, config):
+        self.config = config
+
+        self.id = config.getId()
+        self.BROKER_ADDR = config.get('server-ip')
+        self.TOPICS = { "config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.get("ID")) }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-        self.register_ack_callback = register_ack_callback
-        self.request_config_callback = request_config_callback
+        self.start()
+
+    def makeBlasterTopic(id):
+        return f"blaster/{id}"
     
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, reason_code, properties):
@@ -22,10 +27,9 @@ class MQTT():
             client.subscribe(topic)
 
     # The callback for when a PUBLISH message is received from the server.
-    def on_message(self, client, userdata, msg):
+    def on_message_received(self, client, userdata, msg):
         message = msg.payload.decode()
         topic = msg.topic
-
 
         print(f"Received message from {topic}: {message}")
         
@@ -58,27 +62,22 @@ class MQTT():
 
         # Handle ack messages
         if topic == self.TOPICS['blaster_topic']:
-
             # Handle ack message for registration
             if json_object['cmd'] == 'ack' and json_object['cmdAck'] == 'regID':
                 self.register_ack_callback()
 
             if json_object['cmd'] == 'setSettings':
-                self.request_config_callback(json_object)
+                self.request_config_callback(json_object['someSettings'])
                 
-            
-
-
-
     def start(self):
         self.mqttc.on_connect = self.on_connect
-        self.mqttc.on_message = self.on_message
+        self.mqttc.on_message = self.on_message_received
         self.mqttc.connect(self.BROKER_ADDR, 1883, 60)
         self.mqttc.loop_start()
 
 
     def register_id(self):
-        self.mqttc.publish("blaster/config", f'{{"cmd": "regID", "id": {self.id}}}')
+        self.mqttc.publish("blaster/config", f'{{"cmd": "pollAck", "id": {self.id}, "name":"jabedimiah"}}')
     
     def request_config(self):
         self.mqttc.publish("blaster/config", f'{{"cmd": "reqSettings", "id": {self.id}}}')
