@@ -1,0 +1,15 @@
+#!/bin/bash
+
+config="config.json"
+
+if [ ! -f $config ]; then
+    echo "File '$config' not found"
+    exit 1
+fi
+
+python BlasterClient.py "$config"
+
+if [ $? -ne 0 ]; then
+    echo "Error: BlasterClient.py crashed"
+    exit 1
+fi
