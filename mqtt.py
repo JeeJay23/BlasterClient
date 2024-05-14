@@ -8,6 +8,8 @@ class MQTT():
         self.config = config
 
         self.id = config.getId()
+        self.name = "jebedemiah"
+
         self.BROKER_ADDR = config.get('server-ip')
         self.TOPICS = { "config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.get("ID")) }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
@@ -15,7 +17,7 @@ class MQTT():
 
     def makeBlasterTopic(id):
         return f"blaster/{id}"
-    
+
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, reason_code, properties):
         print(f"Connected with result code {reason_code}")
@@ -75,9 +77,24 @@ class MQTT():
         self.mqttc.connect(self.BROKER_ADDR, 1883, 60)
         self.mqttc.loop_start()
 
+    def sendHit(self):
+        msg = {}
+        msg['id'] = self.id
+        msg['cmd'] = 'hit'
+        self.mqttc.publish("gameplay/hits", json.dumps(msg))
 
     def register_id(self):
-        self.mqttc.publish("blaster/config", f'{{"cmd": "pollAck", "id": {self.id}, "name":"jabedimiah"}}')
+        # TODO make name not hardcoded
+        msg = {}
+        msg['id'] = self.id
+        msg['cmd'] = 'pollAck'
+        msg['name'] = self.name
+
+        self.mqttc.publish("blaster/config", json.dumps(msg))
     
     def request_config(self):
-        self.mqttc.publish("blaster/config", f'{{"cmd": "reqSettings", "id": {self.id}}}')
+        msg = { 
+            'id' : self.id, 
+            'cmd' : "reqSettings"
+        }
+        self.mqttc.publish("blaster/config", json.dumps(msg))
