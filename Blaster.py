@@ -1,5 +1,6 @@
 from enum import Enum
 from Configuration import Configuration
+from mqtt import MQTT
 
 GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
 
@@ -19,4 +20,7 @@ class Blaster():
     
     def request_config_callback(self, config):
         pass
+
+    def hit(self):
+        self.client.sendHit()
 
