@@ -1,4 +1,19 @@
 {
-	"ID": 5,
-	"name": "testName"
+    "Id": 5,
+    "name": "jebedemiah",
+    "network_hub_ip":"172.20.10.3",
+    "network_hub_port":1883,
+    "camera_scaling": 1,
+    "camera_width": 320,
+    "camera_height": 320,
+    "camera_hitbox_size": 50,
+    "camera_color_format":"RGB888",
+    "vision_model_path":"efficientdet_lite0.tflite",
+    "vision_label_path":"labels.txt",
+    "vision_confidence_treshold":0.5,
+    "vision_allowed_labels":[
+        "person",
+        "boat",
+        "giraffe"
+    ]
 }

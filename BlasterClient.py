@@ -6,6 +6,8 @@ from mqtt import MQTT
 from trigger import Trigger
 from gpiozero import LED
 from display_pls_work import Display
+from vision import Vision
+from time import sleep
 
 def trigger_callback_pressed():
     led.on()
@@ -16,7 +18,6 @@ def trigger_callback_pressed():
     
     print('This button pressed calledback is called in main')
 
-    
 def trigger_callback_released():
     led.off()
 
@@ -29,11 +30,12 @@ def trigger_callback_released():
 if __name__ == "__main__":
     settings_filepath = sys.argv[1]
 
-    config = Configuration.createTestConfig()
+    print(f'BlasterClient started with config {settings_filepath}')
+
+    config = Configuration(settings_filepath)
     config.set("ID", get_mac())
 
     client = MQTT(config)
-
     blaster = Blaster(config, client)
     
     # initialize led and turn off by default
@@ -47,6 +49,11 @@ if __name__ == "__main__":
 
     # initialize display (default name is Sjaakie, can be updated with disp.update_name('name'))'
     disp = Display()
+    vision = Vision(config)
 
     while True:
-        pass
+        hit, d = vision.checkForHuman()
+        if (hit):
+            print(f'BlasterClient: hit {d}')
+            blaster.hit()
+        sleep(1)

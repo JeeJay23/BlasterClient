@@ -6,7 +6,7 @@ GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
 
 class Blaster():
 
-    def __init__(self, config, client):
+    def __init__(self, config : Configuration, client : MQTT):
         self.config = config 
         self.game_state = GameState.Initialization # Set to true after receiving 'Start' from hub
 
@@ -14,6 +14,7 @@ class Blaster():
         self.client.register_ack_cb = self.register_ack_callback
         self.client.request_config_cb = self.request_config_callback
         self.client.register_id()
+        print('Blaster: initialized')
 
     def register_ack_callback(self):
         self.client.request_config()

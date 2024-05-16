@@ -7,20 +7,21 @@ class MQTT():
     def __init__(self, config):
         self.config = config
 
-        self.id = config.getId()
-        self.name = "jebedemiah"
+        self.id = config.Id
+        self.name = config.name
 
-        self.BROKER_ADDR = config.get('server-ip')
-        self.TOPICS = { "config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.get("ID")) }
+        self.BROKER_ADDR = config.network_hub_ip
+        self.TOPICS = { "config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.Id) }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.start()
+        print('MQTT: started mqtt client')
 
     def makeBlasterTopic(id):
         return f"blaster/{id}"
 
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, reason_code, properties):
-        print(f"Connected with result code {reason_code}")
+        print(f"MQTT: Connected with result code {reason_code}")
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
 
@@ -33,7 +34,7 @@ class MQTT():
         message = msg.payload.decode()
         topic = msg.topic
 
-        print(f"Received message from {topic}: {message}")
+        print(f"MQTT: Received message from {topic}: {message}")
         
         # example JSON messages
         # json_object cmdAck to receive
@@ -87,14 +88,12 @@ class MQTT():
         # TODO make name not hardcoded
         msg = {}
         msg['id'] = self.id
-        msg['cmd'] = 'pollAck'
-        msg['name'] = self.name
+        msg['cmd'] = 'regID'
 
         self.mqttc.publish("blaster/config", json.dumps(msg))
     
     def request_config(self):
-        msg = { 
-            'id' : self.id, 
-            'cmd' : "reqSettings"
-        }
-        self.mqttc.publish("blaster/config", json.dumps(msg))
+        self.mqttc.publish("blaster/config", json.dumps({
+            'id': self.id,
+            'cmd':'reqSettings'
+        }))
