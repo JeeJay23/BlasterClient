@@ -2,16 +2,28 @@ import sys
 from uuid import getnode as get_mac
 from Configuration import Configuration
 from Blaster import Blaster
-# from mqtt import MQTT
+from mqtt import MQTT
 from trigger import Trigger
 from gpiozero import LED
+from display_pls_work import Display
 
 def trigger_callback_pressed():
     led.on()
+    
+    ## TODO implement this nicely. this is just for demo
+    disp.hit = True
+    disp.update_score()
+    
     print('This button pressed calledback is called in main')
 
+    
 def trigger_callback_released():
     led.off()
+
+    ## TODO implement this nicely. this is just for demo
+    disp.hit = False
+    disp.update_display()
+
     print('This button released calledback is called in main')
 
 if __name__ == "__main__":
@@ -32,6 +44,9 @@ if __name__ == "__main__":
     trig = Trigger(button_pin=6, 
                     trigger_callback_pressed=trigger_callback_pressed, 
                     trigger_callback_released=trigger_callback_released)
+
+    # initialize display (default name is Sjaakie, can be updated with disp.update_name('name'))'
+    disp = Display()
 
     while True:
         pass
