@@ -121,7 +121,7 @@ class Vision():
 
             hit = self.isInCenterBox(im, Point(x1, y1), Point(x2, y2))
             d=self.labels[obj['id']]
-            if (hit):
+            if hit and (d == self.allowed_labels[0] or d == self.allowed_labels[1] or d == self.allowed_labels[2]):
                 return (True, d)
             else:
                 return (False, " ")
