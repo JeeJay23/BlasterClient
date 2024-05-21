@@ -22,7 +22,7 @@ class Configuration(object):
         return self.configDict[attr]
 
     def set(self, key, value):
-        self.configDict[key] = value;
+        self.configDict[key] = value
 
     def write(self, filepath):
         with open(filepath, mode='w') as file:
