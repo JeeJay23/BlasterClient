@@ -13,19 +13,25 @@ def trigger_callback_pressed():
     led.on()
     
     ## TODO implement this nicely. this is just for demo
-    disp.hit = True
-    disp.update_score()
-    
-    print('This button pressed calledback is called in main')
+
+    hit, d = vision.checkForHuman()
+    if (hit):
+        print(f'BlasterClient: hit {d}')
+        #blaster.hit()
+        disp.hit = True    
+        disp.update_score()
+    else:
+        disp.missed = True
+        
+    disp.update_display()
 
 def trigger_callback_released():
     led.off()
 
     ## TODO implement this nicely. this is just for demo
     disp.hit = False
+    disp.missed = False
     disp.update_display()
-
-    print('This button released calledback is called in main')
 
 if __name__ == "__main__":
     settings_filepath = sys.argv[1]
@@ -35,8 +41,8 @@ if __name__ == "__main__":
     config = Configuration(settings_filepath)
     config.set("ID", get_mac())
 
-    client = MQTT(config)
-    blaster = Blaster(config, client)
+    #client = MQTT(config)
+    #blaster = Blaster(config, client)
     
     # initialize led and turn off by default
     led = LED(13)
@@ -52,8 +58,4 @@ if __name__ == "__main__":
     vision = Vision(config)
 
     while True:
-        hit, d = vision.checkForHuman()
-        if (hit):
-            print(f'BlasterClient: hit {d}')
-            blaster.hit()
         sleep(1)
