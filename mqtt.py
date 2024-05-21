@@ -11,7 +11,7 @@ class MQTT():
         self.name = config.name
 
         self.BROKER_ADDR = config.network_hub_ip
-        self.TOPICS = { "config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.Id) }
+        self.TOPICS = {"config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.Id), "poll_topic": "blaster/poll" }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.start()
         print('MQTT: started mqtt client')
@@ -66,11 +66,16 @@ class MQTT():
         # Handle ack messages
         if topic == self.TOPICS['blaster_topic']:
             # Handle ack message for registration
-            if json_object['cmd'] == 'ack' and json_object['cmdAck'] == 'regID':
+            if json_object['cmd'] == 'ack' and json_object['cmdAck'] == 'True':
                 self.register_ack_callback()
 
             if json_object['cmd'] == 'setSettings':
                 self.request_config_callback(json_object['someSettings'])
+
+            #if json_object['cmd'] == 'ack' and json_object[]
+
+        if topic == self.TOPICS['poll_topic']:
+            pass
                 
     def start(self):
         self.mqttc.on_connect = self.on_connect
@@ -93,7 +98,7 @@ class MQTT():
         self.mqttc.publish("blaster/config", json.dumps(msg))
     
     def request_config(self):
-        self.mqttc.publish("blaster/config", json.dumps({
+        self.mqttc.publish("blaster/xx", json.dumps({
             'id': self.id,
             'cmd':'reqSettings'
         }))
