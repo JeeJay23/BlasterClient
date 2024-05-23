@@ -25,7 +25,16 @@ if __name__ == "__main__":
     trig = Trigger(button_pin=6)
     disp = Display()
     vision = Vision(config)
-    blaster = Blaster(config, client, disp, vision, trig, led)
+
+    blaster = Blaster(
+        config=config, 
+        client=client, 
+        display=disp, 
+        vision=vision, 
+        trig=trig, 
+        led=led)
+
+    blaster = Blaster(config, client, None, None, None, None)
 
     while True:
         sleep(1)

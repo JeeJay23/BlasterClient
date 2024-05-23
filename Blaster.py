@@ -10,9 +10,11 @@ GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
 
 class Blaster():
 
-    def __init__(self, config : Configuration, 
+    def __init__(self, 
+                 config : Configuration, 
                  client : MQTT, 
                  display : Display,
+                 vision : Vision,
                  trig : Trigger,
                  led : LED
                  ):
@@ -24,14 +26,22 @@ class Blaster():
         self.client.register_id()
 
         self.display = display
-        self.display.name = config.name
-        self.display.update_display()
+        if (self.display == None):
+            pass
+        else:
+            self.display.name = config.name
+            self.display.update_display()
 
         self.trig = trig
-        trig.trigger_callback_pressed = self.on_button_press
-        trig.trigger_callback_released = self.on_button_release
+        if (self.trig == None):
+            pass
+        else:
+            trig.trigger_callback_pressed = self.on_button_press
+            trig.trigger_callback_released = self.on_button_release
 
         self.led = led
+
+        self.vision = vision
 
         self.game_state = GameState.Initialization # Set to true after receiving 'Start' from hub
         print('Blaster: initialized')
@@ -58,9 +68,6 @@ class Blaster():
         if (topic == self.client.TOPICS['poll_topic']):
             self.client.im_alive()
         
-        
-    
-
     def on_button_press(self):
         self.led.on()
         
