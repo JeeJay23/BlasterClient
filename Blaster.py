@@ -22,7 +22,7 @@ class Blaster():
     def callback_request_config(self, config):
         pass
 
-    def on_message_received(self, message):
+    def on_message_received(self, topic, message):
         # # Handle ack messages
         # if topic == self.TOPICS['blaster_topic']:
         #     # Handle ack message for registration
@@ -35,7 +35,11 @@ class Blaster():
         #     #if json_object['cmd'] == 'ack' and json_object[]
 
         # if topic == self.TOPICS['poll_topic']:
-        pass
+        if (topic == self.client.TOPICS['poll_topic']):
+            self.client.im_alive()
+        
+        
+    
 
     def hit(self):
         self.client.sendHit()

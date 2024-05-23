@@ -100,3 +100,11 @@ class MQTT():
             'id': self.id,
             'cmd':'reqSettings'
         }))
+
+    # responds to 'pollClients' 
+    def im_alive(self):
+        msg = {}
+        msg['id'] = self.id
+        msg['cmd'] = 'pollClients'
+        msg['ack'] = True
+        self.mqttc.publish(self.TOPICS['blaster_topic'], json.dumps(msg))
