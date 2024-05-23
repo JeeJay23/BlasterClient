@@ -10,7 +10,6 @@ class MQTT():
         self.id = config.Id
         self.name = config.name
 
-       
         # public broker for testing now
         #self.BROKER_ADDR = config.network_hub_ip
         self.BROKER_ADDR = 'mqtt-dashboard.com' 

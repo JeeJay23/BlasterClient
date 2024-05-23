@@ -3,7 +3,11 @@ from time import sleep
 
 class Trigger():
     
-    def __init__(self, button_pin, trigger_callback_pressed, trigger_callback_released, debounce_time=0.05):
+    def __init__(self, 
+                 button_pin, 
+                 trigger_callback_pressed = None, 
+                 trigger_callback_released = None, 
+                 debounce_time=0.05):
         self.debounce_time = debounce_time
         self.button = Button(button_pin)
         self.button.when_pressed = self.on_pressed
