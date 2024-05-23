@@ -17,24 +17,23 @@ if __name__ == "__main__":
     config.set("Id", get_mac())
     client = MQTT(config)
     
-    # initialize led and turn off by default
     led = LED(13)
     led.off()
 
     # initialize trigger
-    trig = Trigger(button_pin=6)
-    disp = Display()
-    vision = Vision(config)
+    # trig = Trigger(button_pin=6)
+    # disp = Display()
+    # vision = Vision(config)
 
-    blaster = Blaster(
-        config=config, 
-        client=client, 
-        display=disp, 
-        vision=vision, 
-        trig=trig, 
-        led=led)
+    # blaster = Blaster(
+    #     config=config, 
+    #     client=client, 
+    #     display=disp, 
+    #     vision=vision, 
+    #     trig=trig, 
+    #     led=led)
 
-    blaster = Blaster(config, client, None, None, None, None)
+    blaster = Blaster(config=config, client=client)
 
     while True:
         sleep(1)

@@ -2,7 +2,7 @@ from rpi_lcd import LCD
 
 class Display():
 
-    def __init__(self, name="Sjaakie", score=0):
+    def __init__(self, name="NoName", score=0):
         self.lcd = LCD()
         self.name = name
         self.score = score

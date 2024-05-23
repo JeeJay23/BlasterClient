@@ -11,10 +11,15 @@ class MQTT():
         self.name = config.name
 
         # public broker for testing now
-        #self.BROKER_ADDR = config.network_hub_ip
-        self.BROKER_ADDR = 'mqtt-dashboard.com' 
+        #self.hubIp = config.network_hub_ip
+        self.hubIp = 'mqtt-dashboard.com' 
 
-        self.TOPICS = {"config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.Id), "poll_topic": "blaster/poll" }
+        self.topics = {
+            "config": "blaster/config", 
+            "gameplay": "hub/gameplay", 
+            "blaster": MQTT.makeBlasterTopic(config.Id), 
+            "poll": "blaster/poll" 
+            }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.start()
         self.callback_on_message_received = None
@@ -30,7 +35,7 @@ class MQTT():
         # reconnect then subscriptions will be renewed.
 
         # Subscribe to all topics in the list
-        for topic in self.TOPICS.values():
+        for topic in self.topics.values():
             client.subscribe(topic)
 
     # The callback for when a PUBLISH message is received from the server.
@@ -77,7 +82,7 @@ class MQTT():
     def start(self):
         self.mqttc.on_connect = self.on_connect
         self.mqttc.on_message = self.on_message_received
-        self.mqttc.connect(self.BROKER_ADDR, 1883, 60)
+        self.mqttc.connect(self.hubIp, 1883, 60)
         self.mqttc.loop_start()
 
     def sendHit(self):
@@ -106,4 +111,4 @@ class MQTT():
         msg['id'] = self.id
         msg['cmd'] = 'pollClients'
         msg['ack'] = True
-        self.mqttc.publish(self.TOPICS['blaster_topic'], json.dumps(msg))
+        self.mqttc.publish(self.topics['blaster'], json.dumps(msg))

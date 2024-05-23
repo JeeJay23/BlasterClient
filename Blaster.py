@@ -9,21 +9,23 @@ from gpiozero import LED
 GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
 
 class Blaster():
-
     def __init__(self, 
                  config : Configuration, 
-                 client : MQTT, 
-                 display : Display,
-                 vision : Vision,
-                 trig : Trigger,
-                 led : LED
+                 client : MQTT = None, 
+                 display : Display = None,
+                 vision : Vision = None,
+                 trig : Trigger = None,
+                 led : LED = None
                  ):
 
         self.config = config 
 
         self.client = client
-        self.client.callback_on_message_received = self.on_message_received
-        self.client.register_id()
+        if (self.client == None):
+            pass
+        else:
+            self.client.callback_on_message_received = self.on_message_received
+            self.client.register_id()
 
         self.display = display
         if (self.display == None):
@@ -65,9 +67,13 @@ class Blaster():
         #     #if json_object['cmd'] == 'ack' and json_object[]
 
         # if topic == self.TOPICS['poll_topic']:
-        if (topic == self.client.TOPICS['poll_topic']):
+        if (topic == self.client.topics['poll']):
             self.client.im_alive()
-        
+        elif (topic == self.client.topics['config']):
+            if (message['cmd'] == 'setName'):
+                self.config.set('name', message['name'])
+                self.display.update_name(self.config.name)
+            
     def on_button_press(self):
         self.led.on()
         
