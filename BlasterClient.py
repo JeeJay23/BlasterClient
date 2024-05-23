@@ -21,19 +21,19 @@ if __name__ == "__main__":
     led.off()
 
     # initialize trigger
-    # trig = Trigger(button_pin=6)
-    # disp = Display()
-    # vision = Vision(config)
+    trig = Trigger(button_pin=6)
+    disp = Display()
+    vision = Vision(config)
 
-    # blaster = Blaster(
-    #     config=config, 
-    #     client=client, 
-    #     display=disp, 
-    #     vision=vision, 
-    #     trig=trig, 
-    #     led=led)
+    blaster = Blaster(
+        config=config, 
+        client=client, 
+        display=disp, 
+        vision=vision, 
+        trig=trig, 
+        led=led)
 
-    blaster = Blaster(config=config, client=client)
+    #blaster = Blaster(config=config, client=client)
 
     while True:
         sleep(1)

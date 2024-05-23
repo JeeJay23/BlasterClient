@@ -45,37 +45,13 @@ class MQTT():
 
         print(f"MQTT: Received message from {topic}: {message}")
         
-        # example JSON messages
-        # json_object cmdAck to receive
-        #   {
-        #       "cmd": "ack",
-        #       "id": 0 // id of the hub
-        #       "cmdAck": "regID" // command that was acknowledged
-        #   }
-        # old -> { "cmd": "ack", "id": 0, "cmdAck": "regID" }
-        # new -> { "cmd": "regID", "id": 0, "ack": "True" }
-        
-        # example JSON messages
-        # json_object settings to receive
-        #   {
-        #       "cmd": "setSettings",
-        #       "id": 0 // id of the hub
-        #       "someSettings": 
-        #           {
-        #               "setting1": "value1",   
-        #               "setting2": "value2"
-        #           }
-        #   }
-        # -> { "cmd": "setSettings", "id": 0, "someSettings": { "setting1": "value1", "setting2": "value2" } }
-
-
-
         # convert message_string to json object
         json_object = json.loads(message)
 
         if ('ack' in json_object):
             # TODO implement
             pass
+            print('Something acknowledged ')
         else:
             self.callback_on_message_received(topic, json_object)
                 

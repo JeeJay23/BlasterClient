@@ -6,7 +6,7 @@ from vision import Vision
 from trigger import Trigger
 from gpiozero import LED
 
-GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
+
 
 class Blaster():
     def __init__(self, 
@@ -18,6 +18,8 @@ class Blaster():
                  led : LED = None
                  ):
 
+        self.GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
+        
         self.config = config 
 
         self.client = client
@@ -45,57 +47,63 @@ class Blaster():
 
         self.vision = vision
 
-        self.game_state = GameState.Initialization # Set to true after receiving 'Start' from hub
+        self.score = 0
+
+        self.game_state = self.GameState.Initialization # Set to Playing after receiving 'Start' from hub
         print('Blaster: initialized')
 
     def callback_register_ack(self):
+        # TODO move to on_message_receive
         self.client.request_config()
     
     def callback_request_config(self, config):
+        # TODO move to on_message_receive
         pass
 
     def on_message_received(self, topic, message):
-        # # Handle ack messages
-        # if topic == self.TOPICS['blaster_topic']:
-        #     # Handle ack message for registration
-        #     if json_object['cmd'] == 'ack' and json_object['cmdAck'] == 'True':
-        #         self.register_ack_callback()
-
-        #     if json_object['cmd'] == 'setSettings':
-        #         self.request_config_callback(json_object['someSettings'])
-
-        #     #if json_object['cmd'] == 'ack' and json_object[]
-
-        # if topic == self.TOPICS['poll_topic']:
+        # receive poll from server and send response
         if (topic == self.client.topics['poll']):
             self.client.im_alive()
+
+        # receive player name from server and update display
         elif (topic == self.client.topics['config']):
             if (message['cmd'] == 'setName'):
                 self.config.set('name', message['name'])
                 self.display.update_name(self.config.name)
+
+        # receive start and stop game from server and start/stop game
+        elif(topic == self.client.topics['gameplay']):
+            if(message['cmd'] == 'gameStart'):
+                self.game_state = self.GameState.Playing
+            elif(message['cmd'] == 'gameStop'):
+                self.game_state = self.GameState.Stopped
+
+        # receive current score and update display
+        elif(topic == self.client.topics['blaster']):
+            if (message['cmd'] == 'hit'):
+                self.score = message['score']
+                self.display.update_score(self.score)
             
     def on_button_press(self):
-        self.led.on()
-        
-        ## TODO implement this nicely. this is just for demo
-        hit, d = self.vision.checkForHuman()
-        if (hit):
-            print(f'BlasterClient: hit {d}')
-            #blaster.hit()
-            self.disp.hit = True    
-            self.disp.update_score()
-        else:
-            self.disp.missed = True
-        self.disp.update_display()
+        if (self.game_state == self.GameState.Playing):
+            self.led.on()
+            
+            ## TODO implement this nicely. this is just for demo
+            hit, d = self.vision.checkForHuman()
+            if (hit):
+                print(f'BlasterClient: hit {d}')
+                self.client.sendHit()
+                self.display.hit = True    
+            else:
+                self.display.missed = True
+            self.display.update_display()
 
     def on_button_release(self):
-        self.led.off()
+        if (self.game_state == self.GameState.Playing):
+            self.led.off()
 
-        ## TODO implement this nicely. this is just for demo
-        self.disp.hit = False
-        self.disp.missed = False
-        self.disp.update_display()
-
-    def hit(self):
-        self.client.sendHit()
+            ## TODO implement this nicely. this is just for demo
+            self.display.hit = False
+            self.display.missed = False
+            self.display.update_display()
 

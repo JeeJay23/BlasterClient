@@ -11,9 +11,9 @@ class Display():
         self.update_display()
 
     ## TODO update_score needs a parameter 'score' to update the score to the score the server replies back
-    def update_score(self):
-        self.score = self.score + 1
-        #self.score = score
+    def update_score(self, score):
+        self.score = score
+        self.update_display()
 
     def update_name(self, name):
         self.name = name
