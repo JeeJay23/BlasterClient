@@ -10,10 +10,15 @@ class MQTT():
         self.id = config.Id
         self.name = config.name
 
-        self.BROKER_ADDR = config.network_hub_ip
+       
+        # public broker for testing now
+        #self.BROKER_ADDR = config.network_hub_ip
+        self.BROKER_ADDR = 'mqtt-dashboard.com' 
+
         self.TOPICS = {"config_topic": "blaster/config", "gameplay_topic": "hub/gameplay", "blaster_topic": MQTT.makeBlasterTopic(config.Id), "poll_topic": "blaster/poll" }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
         self.start()
+        self.callback_on_message_received = None
         print('MQTT: started mqtt client')
 
     def makeBlasterTopic(id):
@@ -43,7 +48,8 @@ class MQTT():
         #       "id": 0 // id of the hub
         #       "cmdAck": "regID" // command that was acknowledged
         #   }
-        # -> { "cmd": "ack", "id": 0, "cmdAck": "regID" }
+        # old -> { "cmd": "ack", "id": 0, "cmdAck": "regID" }
+        # new -> { "cmd": "regID", "id": 0, "ack": "True" }
         
         # example JSON messages
         # json_object settings to receive
@@ -63,19 +69,11 @@ class MQTT():
         # convert message_string to json object
         json_object = json.loads(message)
 
-        # Handle ack messages
-        if topic == self.TOPICS['blaster_topic']:
-            # Handle ack message for registration
-            if json_object['cmd'] == 'ack' and json_object['cmdAck'] == 'True':
-                self.register_ack_callback()
-
-            if json_object['cmd'] == 'setSettings':
-                self.request_config_callback(json_object['someSettings'])
-
-            #if json_object['cmd'] == 'ack' and json_object[]
-
-        if topic == self.TOPICS['poll_topic']:
+        if ('ack' in json_object):
+            # TODO implement
             pass
+        else:
+            self.callback_on_message_received(topic, json_object)
                 
     def start(self):
         self.mqttc.on_connect = self.on_connect

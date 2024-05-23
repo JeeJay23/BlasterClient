@@ -41,8 +41,8 @@ if __name__ == "__main__":
     config = Configuration(settings_filepath)
     config.set("ID", get_mac())
 
-    #client = MQTT(config)
-    #blaster = Blaster(config, client)
+    client = MQTT(config)
+    blaster = Blaster(config, client)
     
     # initialize led and turn off by default
     led = LED(13)
