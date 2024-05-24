@@ -7,8 +7,6 @@ from trigger import Trigger
 from gpiozero import LED
 from time import time
 
-
-
 class Blaster():
     def __init__(self, 
                  config : Configuration, 
@@ -42,8 +40,8 @@ class Blaster():
         self.vision = vision
         
         self.score = 0
-        self.last_button_press_time = time()
-        self.delay_between_shots = 2
+        self.button_press_timestamp = time()
+        self.delay_between_shots = config.firing_cooldown
 
         # self.game_state = self.gameState.Initialization # Set to Playing after receiving 'Start' from hub
         self.game_state = self.gameState.Playing # debug mode
@@ -80,7 +78,8 @@ class Blaster():
     def on_button_press(self):
         if (self.game_state == self.gameState.Playing):
             # check if shot is allowed by checking time since last shot
-            if((time() - self.last_button_press_time) > self.delay_between_shots):
+            if((time() - self.button_press_timestamp) > self.delay_between_shots):
+                self.button_press_timestamp = time()
                 self.led.on()
                 
                 ## TODO implement this nicely. this is just for demo

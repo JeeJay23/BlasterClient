@@ -9,7 +9,7 @@ class Trigger():
                  cooldown_time = .5,
                  trigger_callback_pressed = None, 
                  trigger_callback_released = None, 
-                 debounce_time=0.05):
+                 debounce_time=0.5):
 
         self.cooldown_time = cooldown_time
         self.debounce_time = debounce_time
@@ -22,10 +22,9 @@ class Trigger():
     
     def on_pressed(self):
         if ((time() - self.debounce_timestamp) > self.debounce_time):
+            print("Trigger: button pressed")
             self.debounce_timestamp = time()
-            # why are we checking this again?
-            if self.button.is_pressed:
-                self.trigger_callback_pressed()
+            self.trigger_callback_pressed()
 
     def on_released(self):
         self.trigger_callback_released()

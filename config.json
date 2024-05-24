@@ -15,5 +15,6 @@
         "person",
         "boat",
         "giraffe"
-    ]
+    ],
+    "firing_cooldown": 1.5
 }
