@@ -22,6 +22,13 @@ class Blaster():
         
         self.config = config 
 
+        self.display = display
+        if (self.display == None):
+            pass
+        else:
+            self.display.name = config.name
+            self.display.update_display()
+
         self.client = client
         if (self.client == None):
             pass
@@ -29,12 +36,6 @@ class Blaster():
             self.client.callback_on_message_received = self.on_message_received
             self.client.register_id()
 
-        self.display = display
-        if (self.display == None):
-            pass
-        else:
-            self.display.name = config.name
-            self.display.update_display()
 
         self.trig = trig
         if (self.trig == None):
@@ -65,6 +66,10 @@ class Blaster():
         # receive poll from server and send response
         if (topic == self.client.topics['poll']):
             self.client.im_alive()
+
+        # discard message if it is not for us
+        if (not 'id' in message):
+            return
 
         # receive player name from server and update display
         elif (topic == self.client.topics['config']):

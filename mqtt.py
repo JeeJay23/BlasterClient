@@ -53,7 +53,10 @@ class MQTT():
             # TODO implement
             print(f"MQTT: {json_object['cmd']} acknowledged")
         else:
-            self.callback_on_message_received(topic, json_object)
+            if (self.callback_on_message_received == None):
+                pass
+            else:
+                self.callback_on_message_received(topic, json_object)
                 
     def start(self):
         self.mqttc.on_connect = self.on_connect
