@@ -17,6 +17,7 @@ class MQTT():
         self.topics = {
             "config": "blaster/config", 
             "gameplay": "hub/gameplay", 
+            "score": "gameplay/score", 
             "blaster": MQTT.makeBlasterTopic(config.Id), 
             "poll": "blaster/poll" 
             }
@@ -50,8 +51,7 @@ class MQTT():
 
         if ('ack' in json_object):
             # TODO implement
-            pass
-            print('Something acknowledged ')
+            print(f"MQTT: {json_object['cmd']} acknowledged")
         else:
             self.callback_on_message_received(topic, json_object)
                 

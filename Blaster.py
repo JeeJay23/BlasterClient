@@ -18,7 +18,7 @@ class Blaster():
                  led : LED = None
                  ):
 
-        self.GameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
+        self.gameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
         
         self.config = config 
 
@@ -49,7 +49,8 @@ class Blaster():
 
         self.score = 0
 
-        self.game_state = self.GameState.Initialization # Set to Playing after receiving 'Start' from hub
+        # self.game_state = self.gameState.Initialization # Set to Playing after receiving 'Start' from hub
+        self.game_state = self.gameState.Playing # debug mode
         print('Blaster: initialized')
 
     def callback_register_ack(self):
@@ -74,18 +75,18 @@ class Blaster():
         # receive start and stop game from server and start/stop game
         elif(topic == self.client.topics['gameplay']):
             if(message['cmd'] == 'gameStart'):
-                self.game_state = self.GameState.Playing
+                self.game_state = self.gameState.Playing
             elif(message['cmd'] == 'gameStop'):
-                self.game_state = self.GameState.Stopped
+                self.game_state = self.gameState.Stopped
 
         # receive current score and update display
-        elif(topic == self.client.topics['blaster']):
-            if (message['cmd'] == 'hit'):
+        elif(topic == self.client.topics['score']):
+            if (message['cmd'] == 'hit' and message['id'] == self.client.id):
                 self.score = message['score']
                 self.display.update_score(self.score)
             
     def on_button_press(self):
-        if (self.game_state == self.GameState.Playing):
+        if (self.game_state == self.gameState.Playing):
             self.led.on()
             
             ## TODO implement this nicely. this is just for demo
@@ -96,14 +97,12 @@ class Blaster():
                 self.display.hit = True    
             else:
                 self.display.missed = True
-            self.display.update_display()
 
     def on_button_release(self):
-        if (self.game_state == self.GameState.Playing):
+        if (self.game_state == self.gameState.Playing):
             self.led.off()
 
             ## TODO implement this nicely. this is just for demo
             self.display.hit = False
             self.display.missed = False
-            self.display.update_display()
 

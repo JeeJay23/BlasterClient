@@ -8,7 +8,6 @@ class Display():
         self.score = score
         self.hit = False
         self.missed = False
-        self.update_display()
 
     ## TODO update_score needs a parameter 'score' to update the score to the score the server replies back
     def update_score(self, score):
@@ -31,6 +30,7 @@ class Display():
 
         line_2_text = "Score: {}{}".format(self.score, status)
         self.lcd.text(line_2_text, 2)
+        print('Display: updated display')
 
     def clear_display(self):
         self.lcd.clear()
