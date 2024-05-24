@@ -11,8 +11,8 @@ class MQTT():
         self.name = config.name
 
         # public broker for testing now
-        #self.hubIp = config.network_hub_ip
-        self.hubIp = 'mqtt-dashboard.com' 
+        self.hubIp = config.network_hub_ip
+        self.hubPort = config.network_hub_port
 
         self.topics = {
             "config": "blaster/config", 
@@ -68,7 +68,7 @@ class MQTT():
         msg = {}
         msg['id'] = self.id
         msg['cmd'] = 'hit'
-        self.mqttc.publish("gameplay/hits", json.dumps(msg))
+        self.mqttc.publish(self.topics['blaster'], json.dumps(msg))
 
     def register_id(self):
         # TODO make name not hardcoded
@@ -76,10 +76,10 @@ class MQTT():
         msg['id'] = self.id
         msg['cmd'] = 'regID'
 
-        self.mqttc.publish("blaster/config", json.dumps(msg))
+        self.mqttc.publish(self.topics['config'], json.dumps(msg))
     
     def request_config(self):
-        self.mqttc.publish("blaster/xx", json.dumps({
+        self.mqttc.publish(self.topics['blaster'], json.dumps({
             'id': self.id,
             'cmd':'reqSettings'
         }))

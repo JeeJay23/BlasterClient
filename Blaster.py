@@ -5,6 +5,7 @@ from display_pls_work import Display
 from vision import Vision
 from trigger import Trigger
 from gpiozero import LED
+from speakerPewPew import Speaker
 from time import time
 
 class Blaster():
@@ -14,7 +15,8 @@ class Blaster():
                  display : Display = None,
                  vision : Vision = None,
                  trig : Trigger = None,
-                 led : LED = None
+                 led : LED = None,
+                 speaker: Speaker = None
                  ):
 
         self.gameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
@@ -34,7 +36,8 @@ class Blaster():
         if (self.trig != None):
             trig.trigger_callback_pressed = self.on_button_press
             trig.trigger_callback_released = self.on_button_release
-            
+        
+        self.speaker = speaker
 
         self.led = led
         self.vision = vision
@@ -51,9 +54,13 @@ class Blaster():
         # receive poll from server and send response
         if (topic == self.client.topics['poll']):
             self.client.im_alive()
+            return
+
+        if (not 'id' in message):
+            return
 
         # discard message if it is not for us
-        if (not 'id' in message):
+        if (int(message['id']) != self.client.id):
             return
 
         # receive player name from server and update display
@@ -81,6 +88,7 @@ class Blaster():
             if((time() - self.button_press_timestamp) > self.delay_between_shots):
                 self.button_press_timestamp = time()
                 self.led.on()
+                self.speaker.play_pewpew_async(volume=1, duration=0.3)
                 
                 ## TODO implement this nicely. this is just for demo
                 hit, d = self.vision.checkForHuman()

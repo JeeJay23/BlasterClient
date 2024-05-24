@@ -7,6 +7,7 @@ from trigger import Trigger
 from gpiozero import LED
 from display_pls_work import Display
 from vision import Vision
+from speakerPewPew import Speaker
 from time import sleep
 
 if __name__ == "__main__":
@@ -20,10 +21,10 @@ if __name__ == "__main__":
     led = LED(13)
     led.off()
 
-    # initialize trigger
     trig = Trigger(button_pin=6)
     disp = Display()
     vision = Vision(config)
+    speaker = Speaker(12)
 
     blaster = Blaster(
         config=config, 
@@ -31,7 +32,8 @@ if __name__ == "__main__":
         display=disp, 
         vision=vision, 
         trig=trig, 
-        led=led)
+        led=led,
+        speaker=speaker)
 
     #blaster = Blaster(config=config, client=client)
 
