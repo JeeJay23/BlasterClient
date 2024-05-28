@@ -29,11 +29,11 @@ if __name__ == "__main__":
     blaster = Blaster(
         config=config, 
         client=client, 
-        display=disp, 
+        display=None, 
         vision=vision, 
         trig=trig, 
         led=led,
-        speaker=speaker)
+        speaker=None)
 
     #blaster = Blaster(config=config, client=client)
 

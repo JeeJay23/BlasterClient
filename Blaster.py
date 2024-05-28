@@ -41,6 +41,8 @@ class Blaster():
 
         self.led = led
         self.vision = vision
+
+        self.hitAcksToReceive = 0
         
         self.score = 0
         self.button_press_timestamp = time()
@@ -81,6 +83,7 @@ class Blaster():
             if (message['cmd'] == 'hit' and message['id'] == self.client.id):
                 self.score = message['score']
                 self.display.update_score(self.score)
+                self.hitAcksToReceive = self.hitAcksToReceive - 1
             
     def on_button_press(self):
         if (self.game_state == self.gameState.Playing):
@@ -94,9 +97,12 @@ class Blaster():
                 hit, d = self.vision.checkForHuman()
                 if (hit):
                     print(f'BlasterClient: hit {d}')
-                    self.client.sendHit()
+                    self.hitAcksToReceive = self.hitAcksToReceive + 1
+                    for hit in range(self.hitAcksToReceive):
+                        self.client.sendHit()
                     self.display.hit = True    
                 else:
+                    pass
                     self.display.missed = True
 
     def on_button_release(self):
