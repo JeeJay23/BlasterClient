@@ -16,24 +16,34 @@ if __name__ == "__main__":
 
     config = Configuration(settings_filepath)
     config.set("Id", get_mac())
-    client = MQTT(config)
-    
-    led = LED(13)
-    led.off()
 
-    trig = Trigger(button_pin=config.button_pin)
-    disp = Display()
-    vision = Vision(config)
-    speaker = Speaker(config.speaker_pin)
+    try:
+        client = MQTT(config)
+        
+        led = LED(config.led_pin)
+        led.off()
 
-    blaster = Blaster(
-        config=config, 
-        client=client, 
-        display=None, 
-        vision=vision, 
-        trig=trig, 
-        led=led,
-        speaker=None)
+        trig = Trigger(button_pin=config.button_pin)
+        disp = Display()
+        vision = Vision(config)
+        speaker = Speaker(config.speaker_pin)
 
-    while True:
+        blaster = Blaster(
+            config=config, 
+            client=client, 
+            display=disp, 
+            vision=vision, 
+            trig=trig, 
+            led=led,
+            speaker=speaker)
+    except Exception as e:
+        config.write_error_log(e)
+        print(f"BlasterClient: application crashed with exception {e}")
+        exit()
+
+    while (blaster.is_running):
         sleep(1)
+    
+    # save settings on succesfull exit
+    config.write(settings_filepath)
+    print("BlasterClient: exited successfully")

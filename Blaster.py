@@ -19,7 +19,9 @@ class Blaster():
                  speaker: Speaker = None
                  ):
 
-        self.gameState = Enum("GameState", ["Initialization", "Playing", "Stopped"])
+        self.is_running = True
+
+        self.game_state_enum = Enum("GameState", ["Initialization", "Playing", "Stopped"])
         self.config = config 
 
         self.display = display
@@ -48,45 +50,52 @@ class Blaster():
         self.button_press_timestamp = time()
         self.delay_between_shots = config.firing_cooldown
 
-        # self.game_state = self.gameState.Initialization # Set to Playing after receiving 'Start' from hub
-        self.game_state = self.gameState.Playing # debug mode
+        self.game_state = self.game_state_enum.Initialization # Set to Playing after receiving 'Start' from hub
+        # self.game_state = self.game_state_enum.Playing # debug mode
+
         print('Blaster: initialized')
+    
+    def quit(self):
+        print("Blaster: quitting...")
+        self.is_running = False
+        self.client.disconnect()
+        exit()
 
     def on_message_received(self, topic, message):
         # receive poll from server and send response
+
         if (topic == self.client.topics['poll']):
             self.client.im_alive()
             return
 
-        if (not 'id' in message):
-            return
-
-        # discard message if it is not for us
-        if (int(message['id']) != self.client.id):
-            return
-
         # receive player name from server and update display
         elif (topic == self.client.topics['config']):
-            if (message['cmd'] == 'setName'):
-                self.config.set('name', message['name'])
-                self.display.update_name(self.config.name)
+            if (message['cmd'] == 'setName' and 'id' in message):
+                if (int(message['id']) == self.client.id):
+                    self.config.set('name', message['name'])
+                    self.display.update_name(self.config.name)
+            elif(message['cmd'] == 'setConfig'):
+                self.config = Configuration(message['config'])
+                self.quit()
+            elif(message['cmd' == 'reset']):
+                self.quit()
 
         # receive start and stop game from server and start/stop game
         elif(topic == self.client.topics['gameplay']):
             if(message['cmd'] == 'gameStart'):
-                self.game_state = self.gameState.Playing
+                self.game_state = self.game_state_enum.Playing
             elif(message['cmd'] == 'gameStop'):
-                self.game_state = self.gameState.Stopped
+                self.game_state = self.game_state_enum.Stopped
 
         # receive current score and update display
-        elif(topic == self.client.topics['score']):
+        elif(topic == self.client.topics['score'] and 'id' in message):
             if (message['cmd'] == 'hit' and message['id'] == self.client.id):
                 self.score = message['score']
                 self.display.update_score(self.score)
                 self.hitAcksToReceive = self.hitAcksToReceive - 1
             
     def on_button_press(self):
-        if (self.game_state == self.gameState.Playing):
+        if (self.game_state == self.game_state_enum.Playing):
             # check if shot is allowed by checking time since last shot
             if((time() - self.button_press_timestamp) > self.delay_between_shots):
                 self.button_press_timestamp = time()
@@ -106,7 +115,7 @@ class Blaster():
                     self.display.missed = True
 
     def on_button_release(self):
-        if (self.game_state == self.gameState.Playing):
+        if (self.game_state == self.game_state_enum.Playing):
             self.led.off()
 
             ## TODO implement this nicely. this is just for demo

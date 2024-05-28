@@ -29,6 +29,14 @@ class MQTT():
     def makeBlasterTopic(id):
         return f"blaster/{id}"
 
+    def disconnect(self):
+        print('MQTT: disconnecting...')
+        self.mqttc.publish(self.topics['blaster'], json.dumps({
+            'id': self.id,
+            'cmd':'imOut'
+        }))
+        self.mqttc.disconnect()
+
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self, client, userdata, flags, reason_code, properties):
         print(f"MQTT: Connected with result code {reason_code}")
@@ -56,27 +64,29 @@ class MQTT():
             if (self.callback_on_message_received == None):
                 pass
             else:
-                self.callback_on_message_received(topic, json_object)
+                try:
+                    self.callback_on_message_received(topic, json_object)
+                except Exception as e:
+                    self.config.write_error_log(e)
+                    exit()
                 
     def start(self):
         self.mqttc.on_connect = self.on_connect
         self.mqttc.on_message = self.on_message_received
-        self.mqttc.connect(self.hubIp, 1883, 60)
+        self.mqttc.connect(self.hubIp, self.hubPort, 60)
         self.mqttc.loop_start()
 
     def sendHit(self):
-        msg = {}
-        msg['id'] = self.id
-        msg['cmd'] = 'hit'
-        self.mqttc.publish(self.topics['blaster'], json.dumps(msg))
+        self.mqttc.publish(self.topics['blaster'], json.dumps({
+            'id': self.id,
+            'cmd':'hit'
+        }))
 
     def register_id(self):
-        # TODO make name not hardcoded
-        msg = {}
-        msg['id'] = self.id
-        msg['cmd'] = 'regID'
-
-        self.mqttc.publish(self.topics['config'], json.dumps(msg))
+        self.mqttc.publish(self.topics['config'], json.dumps({
+            'id':self.id,
+            'cmd':'regID'
+        }))
     
     def request_config(self):
         self.mqttc.publish(self.topics['blaster'], json.dumps({
@@ -84,10 +94,9 @@ class MQTT():
             'cmd':'reqSettings'
         }))
 
-    # responds to 'pollClients' 
     def im_alive(self):
-        msg = {}
-        msg['id'] = self.id
-        msg['cmd'] = 'pollClients'
-        msg['ack'] = True
-        self.mqttc.publish(self.topics['blaster'], json.dumps(msg))
+        self.mqttc.publish(self.topics['blaster'], json.dumps({
+            'id': self.id,
+            'cmd':'pollClients',
+            'ack': True
+        }))

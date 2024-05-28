@@ -1,4 +1,5 @@
 import json
+import time
 
 class Configuration(object):
     def __init__(self, filepath : str = None) -> None:
@@ -9,6 +10,11 @@ class Configuration(object):
             with open(filepath, mode='r') as file:
                 self.configDict = json.loads(file.read())
                 print(f'Configuration: Loaded existing config')
+
+    def createFromString(json : str):
+        config = Configuration()
+        config.configDict = json.loads(json)
+        return config
         
     def createTestConfig():
         config = Configuration()
@@ -23,6 +29,10 @@ class Configuration(object):
 
     def set(self, key, value):
         self.configDict[key] = value
+
+    def write_error_log(self, error):
+        with open(self.error_log_filepath, mode='a') as file:
+            file.write(f"\n[{time.asctime()}]:\t{error}")
 
     def write(self, filepath):
         with open(filepath, mode='w') as file:

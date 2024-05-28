@@ -63,6 +63,7 @@ class Vision():
         r"""Load TFLite model, returns a Interpreter instance."""
         interpreter = tflite.Interpreter(model_path=model_path)
         interpreter.allocate_tensors()
+        print(f"Vision: initialized interpreter with model {model_path}")
         return interpreter
 
     def process_image(self, image):

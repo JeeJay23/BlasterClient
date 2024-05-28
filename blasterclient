@@ -7,7 +7,11 @@ if [ ! -f $config ]; then
     exit 1
 fi
 
-python BlasterClient.py "$config"
+while true
+do
+   echo "Running blasterclient"
+    python BlasterClient.py "$config"
+done
 
 if [ $? -ne 0 ]; then
     echo "Error: BlasterClient.py crashed"
