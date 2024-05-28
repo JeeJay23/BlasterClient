@@ -17,6 +17,14 @@ if __name__ == "__main__":
     config = Configuration(settings_filepath)
     config.set("Id", get_mac())
 
+    client = None
+    led = None 
+    trig = None
+    disp = None
+    vision = None
+    speaker = None
+    blaster = None
+
     try:
         client = MQTT(config)
         
@@ -42,7 +50,7 @@ if __name__ == "__main__":
         exit()
 
     while (blaster.is_running):
-        sleep(1)
+        sleep(.1)
     
     # save settings on succesfull exit
     config.write(settings_filepath)

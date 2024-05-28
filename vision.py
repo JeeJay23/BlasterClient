@@ -41,7 +41,6 @@ class Vision():
         self.interpreter = Vision.load_model(self.model_path)
         self.labels = Vision.load_labels(self.label_path)
         self.allowed_labels = config.vision_allowed_labels
-        print('Vision: initialized interpreter')
 
         input_details = self.interpreter.get_input_details()
         input_shape = input_details[0]['shape']

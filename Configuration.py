@@ -32,7 +32,7 @@ class Configuration(object):
 
     def write_error_log(self, error):
         with open(self.error_log_filepath, mode='a') as file:
-            file.write(f"\n[{time.asctime()}]:\t{error}")
+            file.write(f"[{time.asctime()}]:\t{error}\n")
 
     def write(self, filepath):
         with open(filepath, mode='w') as file:

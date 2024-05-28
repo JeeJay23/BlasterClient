@@ -55,7 +55,7 @@ class Blaster():
 
         print('Blaster: initialized')
     
-    def quit(self):
+    def do_quit(self):
         print("Blaster: quitting...")
         self.is_running = False
         self.client.disconnect()
@@ -76,9 +76,9 @@ class Blaster():
                     self.display.update_name(self.config.name)
             elif(message['cmd'] == 'setConfig'):
                 self.config = Configuration(message['config'])
-                self.quit()
+                self.do_quit()
             elif(message['cmd' == 'reset']):
-                self.quit()
+                self.do_quit()
 
         # receive start and stop game from server and start/stop game
         elif(topic == self.client.topics['gameplay']):

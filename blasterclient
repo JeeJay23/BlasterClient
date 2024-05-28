@@ -1,6 +1,7 @@
 #!/bin/bash
 
-config="config.json"
+projdir="/home/project/code/BlasterClient"
+config="${projdir}/config.json"
 
 if [ ! -f $config ]; then
     echo "File '$config' not found"
@@ -10,7 +11,7 @@ fi
 while true
 do
    echo "Running blasterclient"
-    python BlasterClient.py "$config"
+    python "${projdir}/BlasterClient.py" "$config"
 done
 
 if [ $? -ne 0 ]; then
