@@ -21,10 +21,10 @@ if __name__ == "__main__":
     led = LED(13)
     led.off()
 
-    trig = Trigger(button_pin=6)
+    trig = Trigger(button_pin=config.button_pin)
     disp = Display()
     vision = Vision(config)
-    speaker = Speaker(12)
+    speaker = Speaker(config.speaker_pin)
 
     blaster = Blaster(
         config=config, 
@@ -34,8 +34,6 @@ if __name__ == "__main__":
         trig=trig, 
         led=led,
         speaker=None)
-
-    #blaster = Blaster(config=config, client=client)
 
     while True:
         sleep(1)

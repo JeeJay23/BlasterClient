@@ -16,7 +16,5 @@
         "boat",
         "giraffe"
     ],
-    "firing_cooldown": 1.5,
-    "button_pin":6,
-    "speaker_pin":12
+    "firing_cooldown": 1.5
 }
