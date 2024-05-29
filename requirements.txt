@@ -1,0 +1,10 @@
+cvzone==1.6.1
+gpiozero==2.0
+numpy==1.24.2
+opencv_python==4.9.0.80
+paho_mqtt==2.1.0
+picamera2==0.3.18
+Pillow==9.4.0
+Pillow==10.3.0
+rpi_lcd==0.0.3
+tensorflow==2.16.1
