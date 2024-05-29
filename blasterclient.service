@@ -1,0 +1,14 @@
+[Unit]
+Description=BlasterClient
+After=multi-user.target
+
+[Service]
+Type=simple
+User=project
+WorkingDirectory=/home/project/code/BlasterClient
+ExecStart=/usr/bin/python3 /home/project/code/BlasterClient/BlasterClient.py /home/project/code/BlasterClient/config.json
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
