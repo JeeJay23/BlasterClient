@@ -49,6 +49,7 @@ if __name__ == "__main__":
         print(f"BlasterClient: application crashed with exception {e}")
         exit()
 
+    print('BlasterClient: main loop started')
     while (blaster.is_running):
         sleep(.1)
     

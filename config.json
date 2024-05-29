@@ -1,7 +1,7 @@
 {
     "Id": 5,
     "name": "jebedemiah",
-    "network_hub_ip":"172.20.10.2",
+    "network_hub_ip":"172.20.10.6",
     "network_hub_port":1883,
     "camera_scaling": 1,
     "camera_width": 320,

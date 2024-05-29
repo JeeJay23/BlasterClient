@@ -22,7 +22,6 @@ class MQTT():
             "poll": "blaster/poll" 
             }
         self.mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
-        self.start()
         self.callback_on_message_received = None
         print('MQTT: started mqtt client')
 

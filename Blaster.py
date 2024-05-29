@@ -32,6 +32,7 @@ class Blaster():
         self.client = client
         if (self.client != None):
             self.client.callback_on_message_received = self.on_message_received
+            self.client.start()
             self.client.register_id()
 
         self.trig = trig
