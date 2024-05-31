@@ -80,6 +80,8 @@ class Blaster():
                 self.do_quit()
             elif(message['cmd' == 'reset']):
                 self.do_quit()
+            elif(message['cmd'] == 'setInterval'):
+                self.trig.cooldown_time = float(message['interval'])
 
         # receive start and stop game from server and start/stop game
         elif(topic == self.client.topics['gameplay']):
@@ -110,10 +112,11 @@ class Blaster():
                     self.hitAcksToReceive = self.hitAcksToReceive + 1
                     for hit in range(self.hitAcksToReceive):
                         self.client.sendHit()
-                    self.display.hit = True    
+                    self.display.hit = True  
+                    self.display.update_display()  
                 else:
-                    pass
                     self.display.missed = True
+                    self.display.update_display()
 
     def on_button_release(self):
         if (self.game_state == self.game_state_enum.Playing):
@@ -122,5 +125,5 @@ class Blaster():
             ## TODO implement this nicely. this is just for demo
             self.display.hit = False
             self.display.missed = False
-            last_button_press = time()
+            self.display.update_display()
 
