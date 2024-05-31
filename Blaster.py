@@ -113,10 +113,10 @@ class Blaster():
                     for hit in range(self.hitAcksToReceive):
                         self.client.sendHit()
                     self.display.hit = True  
-                    self.display.update_display()  
+                    #self.display.update_display()  
                 else:
                     self.display.missed = True
-                    self.display.update_display()
+                    #self.display.update_display()
 
     def on_button_release(self):
         if (self.game_state == self.game_state_enum.Playing):
@@ -125,5 +125,5 @@ class Blaster():
             ## TODO implement this nicely. this is just for demo
             self.display.hit = False
             self.display.missed = False
-            self.display.update_display()
+            #self.display.update_display()
 
