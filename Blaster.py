@@ -113,16 +113,14 @@ class Blaster():
                     for hit in range(self.hitAcksToReceive):
                         self.client.sendHit()
                     self.display.hit = True
+                    self.display.missed=False
                     self.display.needs_update = True   
                 else:
                     self.display.missed = True
+                    self.display.hit=False
                     self.display.needs_update = True  
 
     def on_button_release(self):
         if (self.game_state == self.game_state_enum.Playing):
             self.led.off()
-
-            ## TODO implement this nicely. this is just for demo
-            self.display.hit = False
-            self.display.missed = False
 

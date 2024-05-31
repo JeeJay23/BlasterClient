@@ -27,7 +27,7 @@ class Display():
         elif self.missed:
             status = " - Miss!"
         else:
-            status = ""
+            status=""
 
         line_2_text = "Score: {}{}".format(self.score, status)
         self.lcd.text(line_2_text, 2)
