@@ -8,13 +8,17 @@
     "camera_height": 320,
     "camera_hitbox_size": 50,
     "camera_color_format":"RGB888",
-    "vision_model_path":"efficientdet_lite0.tflite",
-    "vision_label_path":"labels.txt",
+    "vision_model_path":"/home/project/code/BlasterClient/efficientdet_lite0.tflite",
+    "vision_label_path":"/home/project/code/BlasterClient/labels.txt",
     "vision_confidence_treshold":0.5,
     "vision_allowed_labels":[
         "person",
         "boat",
         "giraffe"
     ],
-    "firing_cooldown": 1.5
+    "firing_cooldown": 1.5,
+    "button_pin":5,
+    "speaker_pin":13,
+    "led_pin":22,
+    "error_log_filepath":"/home/project/code/BlasterClient/error.log"
 }

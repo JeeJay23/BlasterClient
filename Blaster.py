@@ -78,10 +78,10 @@ class Blaster():
             elif(message['cmd'] == 'setConfig'):
                 self.config = Configuration(message['config'])
                 self.do_quit()
-            elif(message['cmd' == 'reset']):
+            elif(message['cmd'] == 'reset'):
                 self.do_quit()
             elif(message['cmd'] == 'setInterval'):
-                self.trig.cooldown_time = float(message['interval'])
+                self.delay_between_shots = float(message['interval'])
 
         # receive start and stop game from server and start/stop game
         elif(topic == self.client.topics['gameplay']):
