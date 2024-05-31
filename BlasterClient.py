@@ -52,6 +52,8 @@ if __name__ == "__main__":
     print('BlasterClient: main loop started')
     while (blaster.is_running):
         sleep(.1)
+        if (disp.needs_update):
+            disp.update_display()
     
     # save settings on succesfull exit
     config.write(settings_filepath)
